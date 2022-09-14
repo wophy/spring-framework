@@ -191,12 +191,17 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 */
 	public ClassPathXmlApplicationContext(String[] paths, Class<?> clazz, @Nullable ApplicationContext parent)
 			throws BeansException {
-
+		/**
+		 * 往上调用父类的构造 AbstractApplicationContext
+		 * AbstractApplicationContext 一些属性进行了舒适化
+		 * 这里的parent是null 如果不是null 那么会merge环境信息
+		 */
 		super(parent);
 		Assert.notNull(paths, "Path array must not be null");
 		Assert.notNull(clazz, "Class argument must not be null");
 		this.configResources = new Resource[paths.length];
 		for (int i = 0; i < paths.length; i++) {
+			//构建资源
 			this.configResources[i] = new ClassPathResource(paths[i], clazz);
 		}
 		refresh();
