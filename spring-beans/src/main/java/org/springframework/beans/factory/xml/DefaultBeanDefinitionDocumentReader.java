@@ -125,10 +125,12 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// the new (child) delegate with a reference to the parent for fallback purposes,
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
+		//定义解析 Element 的各种方法
 		BeanDefinitionParserDelegate parent = this.delegate;
 		this.delegate = createDelegate(getReaderContext(), root, parent);
-
+		//确定给定节点是否指示默认名称空间。
 		if (this.delegate.isDefaultNamespace(root)) {
+			//处理 profile属性
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 			if (StringUtils.hasText(profileSpec)) {
 				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
@@ -144,9 +146,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				}
 			}
 		}
-
+		//解析前 留给子类定义
 		preProcessXml(root);
+		//解析
 		parseBeanDefinitions(root, this.delegate);
+		//解析后 留给子类定义
 		postProcessXml(root);
 
 		this.delegate = parent;
@@ -173,9 +177,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				if (node instanceof Element) {
 					Element ele = (Element) node;
 					if (delegate.isDefaultNamespace(ele)) {
+						//默认的解析方式
 						parseDefaultElement(ele, delegate);
 					}
 					else {
+						//可以自定义的
 						delegate.parseCustomElement(ele);
 					}
 				}
@@ -187,15 +193,19 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	}
 
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
+		// IMPORT 标签处理
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			importBeanDefinitionResource(ele);
 		}
+		// ALIAS 标签处理
 		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
 			processAliasRegistration(ele);
 		}
+		// BEAN 标签处理
 		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
 			processBeanDefinition(ele, delegate);
 		}
+		// BEANS 标签处理
 		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
 			// recurse
 			doRegisterBeanDefinitions(ele);
@@ -301,6 +311,13 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	/**
 	 * Process the given bean element, parsing the bean definition
 	 * and registering it with the registry.
+	 * 大致的逻辑总结如下:
+	 * l. 首先委托 BeanDefinitionDelegate 类的 parseBeanDefinitionElement 方法进行元素解析，
+	 * 返回 BeanDefinitionHolder 类型的实例 bdHolder 过这个方法后， bdHolder 实例已包含我们配置
+	 * 文件中配置的各种属性了，例如 class name id alias 之类的属性
+	 * 2. 当返回的 bdHolder 不为空的情况下若存在默认标签的子节点下再有对自定义标签进行解析
+	 * 3. 解析完成后， 要对解析后的 bdHolder 进行注册，同样， 注册操作委托给了 Bean-DefinitionReaderUtils的 registerBeanDefinition 方法
+	 * 4. 最后发出响应时间，通知相关的监昕器，这个 bean 加载完成了
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);

@@ -34,6 +34,7 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.CannotLoadBeanClassException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
@@ -72,6 +73,10 @@ public class ClassPathXmlApplicationContextTests {
 	private static final String ALIAS_FOR_PARENT_CONTEXT = PATH + "aliasForParent.xml";
 	private static final String TEST_PROPERTIES = "test.properties";
 
+	void myTest(){
+		XmlBeanFactory xmlBeanFactory = new XmlBeanFactory(new ClassPathResource(FQ_SIMPLE_CONTEXT));
+		xmlBeanFactory.getBean("someMessageSource");
+	}
 
 	@Test
 	void singleConfigLocation() {
