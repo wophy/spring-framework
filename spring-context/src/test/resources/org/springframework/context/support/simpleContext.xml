@@ -4,13 +4,24 @@
 <beans>
 
 	<bean id="testA" name="testA"
-		  class="org.springframework.test.TestA">
-		<constructor-arg value="testB"></constructor-arg>
+		  class="org.springframework.test.TestA"
+		  init-method="init" destroy-method="destroy"
+	>
+		<property name="testB" ref="testB"></property>
 	</bean>
+
 
 	<bean id="testB" name="testB"
 		  class="org.springframework.test.TestB">
-	<constructor-arg value="testA"></constructor-arg>
+		<property name="testA" ref="testA"></property>
+
+	</bean>
+
+	<bean id="testC" name="testC"
+		  class="org.springframework.test.TestC"
+		  init-method="init" destroy-method="destroy">
+		<property name="testA" ref="testA"></property>
+
 	</bean>
 
 	<bean id="someMessageSource" name="yourMessageSource"

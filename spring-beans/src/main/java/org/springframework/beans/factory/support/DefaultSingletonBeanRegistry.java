@@ -188,6 +188,20 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// Quick check for existing instance without full singleton lock
 		//缓存是否存在
+		/**
+		 * 例如 TestA -> 依赖 TestB   TestB-> 依赖TestA
+		 * 通过getBean(testA) 第一次进入时 缓存不存在直接返回null 之后会根据构造方法创建
+		 * 通过依赖检查需要TestB 递归getBean(testB)
+		 * 第二次进入次方法 此时testB也是null直接返回 之后会根据构造方法创建
+		 * 对testB进行依赖检查 再次递归getBean(testA)
+		 * 第三次进入此方法 testA依然为空,但是处于正在创建中,之后会检查早期引用中是否存在(实际未否)
+		 * 这是会返回bean的 ObjectFactory (函数式接口)  同时会将返回的结果放入 早期引用 (这样下次调用就可以找到)
+		 * 随后会移除singletonFactories中的 ObjectFactory
+		 * 当testB创建完成后会执行  DefaultSingletonBeanRegistry#addSingleton 将bean添加到singletonObjects 同时移除 早期引用 earlySingletonObjects
+		 * @see DefaultSingletonBeanRegistry#addSingleton(String, Object)
+		 * @see  ObjectFactory
+		 * @see
+		 */
 		Object singletonObject = this.singletonObjects.get(beanName);
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			singletonObject = this.earlySingletonObjects.get(beanName);
@@ -237,7 +251,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
 				}
 				/**
-				 * 记录正在处理中状态 ，这样便可以对循环依赖进行检测
+				 * **记录正在处理中状态 **，这样便可以对循环依赖进行检测
 				 * --------------------------------------------------------
 				 */
 				beforeSingletonCreation(beanName);

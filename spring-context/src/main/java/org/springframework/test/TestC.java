@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * @date 2022/11/2 15:19
  */
 @Component
-public class TestB {
+public class TestC {
 	public TestA getTestA() {
 		return testA;
 	}
@@ -17,9 +17,15 @@ public class TestB {
 		this.testA = testA;
 	}
 
-	public TestB() {
+	public TestC() {
 	}
 	private TestA testA;
 
+	public void init(){
+		System.out.println(" 执行了  init ");
+	}
 
+	public void destroy(){
+		System.out.println(" 执行了  destroy ");
+	}
 }

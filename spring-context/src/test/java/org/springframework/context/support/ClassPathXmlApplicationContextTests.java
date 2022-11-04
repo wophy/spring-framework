@@ -76,6 +76,8 @@ public class ClassPathXmlApplicationContextTests {
 	void myTest(){
 		XmlBeanFactory xmlBeanFactory = new XmlBeanFactory(new ClassPathResource(FQ_SIMPLE_CONTEXT));
 		xmlBeanFactory.getBean("testA");
+		xmlBeanFactory.getBean("testB");
+		xmlBeanFactory.getBean("testC");
 	}
 
 	@Test
