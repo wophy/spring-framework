@@ -983,6 +983,19 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of BeanDefinitionRegistry interface
 	//---------------------------------------------------------------------
 
+	/**
+	 * 1 . AbstractBeanDefinition 的校验。在解析XML文件的时候我们提过校验，但是此校验
+	 * 非彼校验，之前的校验时针对于XML格式的校验，而此时的校验时针是对于AbstractBean-
+	 * Definition 的 methodOverrides 属性的。
+	 *       2 .对beanName已经注册的情况的处理。如果设置了不允许bean的覆盖，则需要抛出
+	 * 异常，否则直接覆盖。
+	 *       3 .加入map缓存。
+	 *       4 .清除解析之前稻下的对应beanName的缓存。
+	 *       2 .通过别名注册BeanDefinition
+	 * @param beanName the name of the bean instance to register
+	 * @param beanDefinition definition of the bean instance to register
+	 * @throws BeanDefinitionStoreException
+	 */
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {

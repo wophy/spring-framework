@@ -72,10 +72,10 @@ public class ClassPathXmlApplicationContextTests {
 	private static final String ALIAS_THAT_OVERRIDES_PARENT_CONTEXT = PATH + "aliasThatOverridesParent.xml";
 	private static final String ALIAS_FOR_PARENT_CONTEXT = PATH + "aliasForParent.xml";
 	private static final String TEST_PROPERTIES = "test.properties";
-
+	@Test
 	void myTest(){
 		XmlBeanFactory xmlBeanFactory = new XmlBeanFactory(new ClassPathResource(FQ_SIMPLE_CONTEXT));
-		xmlBeanFactory.getBean("someMessageSource");
+		xmlBeanFactory.getBean("testA");
 	}
 
 	@Test

@@ -3,6 +3,16 @@
 
 <beans>
 
+	<bean id="testA" name="testA"
+		  class="org.springframework.test.TestA">
+		<constructor-arg value="testB"></constructor-arg>
+	</bean>
+
+	<bean id="testB" name="testB"
+		  class="org.springframework.test.TestB">
+	<constructor-arg value="testA"></constructor-arg>
+	</bean>
+
 	<bean id="someMessageSource" name="yourMessageSource"
 			class="org.springframework.context.support.StaticMessageSource"/>
 
