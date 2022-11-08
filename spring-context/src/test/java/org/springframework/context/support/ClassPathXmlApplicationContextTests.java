@@ -74,10 +74,10 @@ public class ClassPathXmlApplicationContextTests {
 	private static final String TEST_PROPERTIES = "test.properties";
 	@Test
 	void myTest(){
-		XmlBeanFactory xmlBeanFactory = new XmlBeanFactory(new ClassPathResource(FQ_SIMPLE_CONTEXT));
-		xmlBeanFactory.getBean("testA");
-		xmlBeanFactory.getBean("testB");
-		xmlBeanFactory.getBean("testC");
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(FQ_SIMPLE_CONTEXT);
+		ctx.getBean("testA");
+		ctx.getBean("testB");
+		ctx.getBean("testC");
 	}
 
 	@Test
